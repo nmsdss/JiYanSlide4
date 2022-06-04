@@ -142,7 +142,7 @@ def get_w(captchaId, lot_number, detail_time, distance, passtime, track, gct_key
         "userresponse": distance / (.8876 * 340 / 300),
         "device_id": "D00D",
         "lot_number": lot_number,
-        "pow_msg": f"1|0|md5|{detail_time}|{captchaId}|{lot_number}||{'d8984d9879b0abea'}",
+        "pow_msg": f"1|0|md5|{detail_time}|{captchaId}|{lot_number}||{random_str()}",
         "pow_sign": "",
         "geetest": "captcha",
         "lang": "zh",
