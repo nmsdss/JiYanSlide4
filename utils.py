@@ -13,7 +13,6 @@ import hashlib
 
 from settings import *
 
-
 # det = ddddocr.DdddOcr(det=False, ocr=False)
 with open("static/json/tracks.json", "r") as f:
     tracks_json = json.load(f)
@@ -61,6 +60,7 @@ def random_str():
     for i in range(4):
         data += (format((int((1 + random.random()) * 65536) | 0), "x")[1:])
     return data
+
 
 # 获取随机键值对,写死就行
 # def get_gct_value(gct_text):
@@ -132,7 +132,7 @@ def get_track(distance):
     return passtime, track
 
 
-def get_w(captchaId, lot_number, detail_time, distance, passtime, track, gct_key=None, gct_value=None):
+def get_w_slide(captchaId, lot_number, detail_time, distance, passtime, track, gct_key=None, gct_value=None):
     key = random_str()
     rsa_encode = RSA_encrypt(key)
     encrypt_data = {
@@ -140,6 +140,25 @@ def get_w(captchaId, lot_number, detail_time, distance, passtime, track, gct_key
         "track": track,  # 轨迹
         "passtime": passtime,  # 耗时
         "userresponse": distance / (.8876 * 340 / 300),
+        "device_id": "D00D",
+        "lot_number": lot_number,
+        "pow_msg": f"1|0|md5|{detail_time}|{captchaId}|{lot_number}||{random_str()}",
+        "pow_sign": "",
+        "geetest": "captcha",
+        "lang": "zh",
+        "ep": "123",
+        'cuel': '632729377',  # gct_key: gct_value 随机键值对
+        "em": {"ph": 0, "cp": 0, "ek": "11", "wd": 1, "nt": 0, "si": 0, "sc": 0}
+    }
+    encrypt_data["pow_sign"] = hashlib.md5(encrypt_data["pow_msg"].encode()).hexdigest()
+    aes_encode = AES_encrypt(str(encrypt_data).replace(" ", "").replace("'", '"'), key)
+    return aes_encode + rsa_encode
+
+
+def get_w_wugan(captchaId, lot_number, detail_time, gct_key=None, gct_value=None):
+    key = random_str()
+    rsa_encode = RSA_encrypt(key)
+    encrypt_data = {
         "device_id": "D00D",
         "lot_number": lot_number,
         "pow_msg": f"1|0|md5|{detail_time}|{captchaId}|{lot_number}||{random_str()}",
